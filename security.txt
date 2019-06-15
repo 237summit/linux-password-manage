@@ -1,47 +1,49 @@
 재미로 보는 리눅스 보안
+
 1. 패스워드 관리
 John The Ripper
 https://www.openwall.com/john/
-# yum install -y gcc
-# wget https://www.openwall.com/john/k/john-1.9.0-jumbo-1.tar.gz
-# tar xvf john-1.9.0.tar.gz
-# cd john-1.9.0/src/
-# make clean linux-x86-64
+   # yum install -y gcc
+   # wget https://www.openwall.com/john/k/john-1.9.0-jumbo-1.tar.gz
+   # tar xvf john-1.9.0.tar.gz
+   # cd john-1.9.0/src/
+   # make clean linux-x86-64
 
-# cd ../run/
-# ls
-# ./unshadow /etc/passwd /etc/shadow > pass
-# ls pass
-# cat pass
-# ./john pass
+   # cd ../run/
+   # ls
+   # ./unshadow /etc/passwd /etc/shadow > pass
+   # ls pass
+   # cat pass
+   # ./john pass
 
 2. PAM 인증을 통한 보안설정
 1) user 계정과 패스워드 인증에 실패하면 일정시간(2분)동안 로그인 하지 못하게 설정
-# cd /etc/pam.d
-# vim sshd
-auth required pam_tally2.so deny=5 unlock_time=120
-...
-- 로그인 TEST
-# ssh smlee@localhost
-   3번 로그인 실패
-# pam_tally2 --user smlee
+   # cd /etc/pam.d
+   # vim sshd
+   auth required pam_tally2.so deny=5 unlock_time=120
+   ...
+
+   - 로그인 TEST
+   # ssh smlee@localhost
+      3번 로그인 실패
+   # pam_tally2 --user smlee
 
 2) 특정 유저들만 로그인 할수 있도록 허용
-# useradd lee
-# passwd lee
-# useradd kim
-# passwd kim
+   # useradd lee
+   # passwd lee
+   # useradd kim
+   # passwd kim
 
 - lee 사용자만 ssh 로 로그인할 수 있도록 설정
-# vim sshd
-auth       required     pam_listfile.so item=user sense=allow file=/etc/sshuser onerr=succeed 
-# vim /etc/sshuser
-lee
+   # vim sshd
+   auth       required     pam_listfile.so item=user sense=allow file=/etc/sshuser onerr=succeed 
+   # vim /etc/sshuser
+   lee
 
 3. Port Scan
 https://www.youtube.com/watch?v=0PxTAn4g20U
 열려있는 포트를 확인해서 접근 보호
-# yum install -y nmap
-# nmap --help
-# nmap  localhost
-# nmap -sS localhost
+   # yum install -y nmap
+   # nmap --help
+   # nmap  localhost
+   # nmap -sS localhost
