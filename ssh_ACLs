@@ -1,0 +1,18 @@
+Using pam_listfile to Implement Arbitrary ACLs
+
+1. remote에서 ssh 로그인 허용할 유저를 등록
+# cat > /etc/ssh_permit
+guru
+
+2.PAM ssh 인증정보에 허가된 유저만 로그인 하도록 허용
+    sshd 파일의 첫번째 인증으로 "auth required ... file=/etc/ssh_permit" 라인을 추가후 저장.
+    의미: ssh_permit 파일에 등록된 유저만 sshd에 로그인 허용함
+# vi /etc/pam.d/sshd 
+#%PAM-1.0
+auth required pam_listfile.so sense=allow item=user file=/etc/ssh_permit
+auth	   required	pam_sepermit.so
+auth       substack     password-auth
+auth       include      postlogin
+
+
+guru 사용자 외는 sshd에 접근 불가능!!
